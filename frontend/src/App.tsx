@@ -1,5 +1,5 @@
 
-import RoutesTable from "./adapters/ui/{components}/RoutesTable";
+import RoutesTable from "./adapters/ui/components/RoutesTable";
 
 export default function App() {
   return (
