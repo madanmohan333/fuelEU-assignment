@@ -1,5 +1,5 @@
-import { Route } from "../domain/route";
-import { RoutesPort } from "../ports/routesPort";
+import type{ Route } from "../domain/route";
+import type{ RoutesPort } from "../ports/routesPort";
 
 export class GetRoutes {
   constructor(private routesPort: RoutesPort) {}
