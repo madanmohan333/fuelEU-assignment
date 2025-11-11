@@ -1,9 +1,27 @@
-import type{ BanksPort } from "../../core/ports/banksPort";
-import type{ Bank } from "../../core/domain/bank";
+import type{ Route } from "../../core/domain/route";
+import type{ RoutesPort } from "../../core/ports/routesPort";
 
-export class HttpBanksAdapter implements BanksPort {
-  async getAllBanks(): Promise<Bank[]> {
-    const res = await fetch("http://localhost:3000/api/banks");
-    return res.json();
+export class HttpRoutesAdapter implements RoutesPort {
+  private mockRoutes: Route[] = [
+    { routeId: "R001", vesselType: "Container", fuelType: "HFO", year: 2024, ghgIntensity: 91.0, fuelConsumption: 5000, distance: 12000, totalEmissions: 4500, isBaseline: true },
+    { routeId: "R002", vesselType: "BulkCarrier", fuelType: "LNG", year: 2024, ghgIntensity: 88.0, fuelConsumption: 4800, distance: 11500, totalEmissions: 4200 },
+    { routeId: "R003", vesselType: "Tanker", fuelType: "MGO", year: 2024, ghgIntensity: 93.5, fuelConsumption: 5100, distance: 12500, totalEmissions: 4700 },
+    { routeId: "R004", vesselType: "RoRo", fuelType: "HFO", year: 2025, ghgIntensity: 89.2, fuelConsumption: 4900, distance: 11800, totalEmissions: 4300 },
+    { routeId: "R005", vesselType: "Container", fuelType: "LNG", year: 2025, ghgIntensity: 90.5, fuelConsumption: 4950, distance: 11900, totalEmissions: 4400 },
+  ];
+
+  async getRoutes(): Promise<Route[]> {
+    return this.mockRoutes;
+  }
+
+  async setBaseline(routeId: string): Promise<void> {
+    this.mockRoutes = this.mockRoutes.map((r) => ({
+      ...r,
+      isBaseline: r.routeId === routeId,
+    }));
+  }
+
+  async getComparisonRoutes(): Promise<Route[]> {
+    return this.mockRoutes;
   }
 }

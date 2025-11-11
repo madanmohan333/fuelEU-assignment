@@ -1,10 +1,10 @@
-import type{ Route } from "../domain/route";
 import type{ RoutesPort } from "../ports/routesPort";
+import type{ Route } from "../domain/route";
 
 export class GetRoutes {
   constructor(private routesPort: RoutesPort) {}
 
-  async execute(filters?: { year?: number; fuelType?: string }): Promise<Route[]> {
-    return this.routesPort.fetchRoutes(filters);
+  async execute(): Promise<Route[]> {
+    return await this.routesPort.getRoutes();
   }
 }

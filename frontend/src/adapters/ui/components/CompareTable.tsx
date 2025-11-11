@@ -1,34 +1,53 @@
 import { useEffect, useState } from "react";
-import { CompareRoutes } from "../../../core/application/compareRoutes";
 import { HttpRoutesAdapter } from "../../infrastructure/httpRoutesAdapter";
-import type{ Route } from "../../../core/domain/route";
+// import type{ Route } from "../../../core/domain/route";
 
 export function CompareTable() {
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const [data, setData] = useState<
+    { routeId: string; baseline: number; comparison: number; diff: number; compliant: boolean }[]
+  >([]);
   const adapter = new HttpRoutesAdapter();
-  const compareRoutes = new CompareRoutes(adapter);
+  const TARGET = 89.3368;
 
   useEffect(() => {
-    compareRoutes.execute().then(setRoutes);
+    adapter.getComparisonRoutes().then((routes) => {
+      const baseline = routes.find((r) => r.isBaseline);
+      if (!baseline) return;
+
+      const result = routes
+        .filter((r) => !r.isBaseline)
+        .map((r) => ({
+          routeId: r.routeId,
+          baseline: baseline.ghgIntensity,
+          comparison: r.ghgIntensity,
+          diff: parseFloat(((r.ghgIntensity / baseline.ghgIntensity - 1) * 100).toFixed(2)),
+          compliant: r.ghgIntensity <= TARGET,
+        }));
+      setData(result);
+    });
   }, []);
 
   return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">Compare Routes</h1>
-      <table className="table-auto border w-full">
-        <thead>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Compare Routes</h2>
+      <table className="min-w-full border">
+        <thead className="bg-gray-100">
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Performance</th>
+            <th>Route</th>
+            <th>Baseline</th>
+            <th>Comparison</th>
+            <th>% Diff</th>
+            <th>Compliant</th>
           </tr>
         </thead>
         <tbody>
-          {routes.map((r) => (
-            <tr key={r.id}>
-              <td>{r.id}</td>
-              <td>{r.name}</td>
-              <td>{r.performance ?? "N/A"}</td>
+          {data.map((d) => (
+            <tr key={d.routeId} className="text-center border-b">
+              <td>{d.routeId}</td>
+              <td>{d.baseline}</td>
+              <td>{d.comparison}</td>
+              <td>{d.diff}%</td>
+              <td>{d.compliant ? "✅" : "❌"}</td>
             </tr>
           ))}
         </tbody>

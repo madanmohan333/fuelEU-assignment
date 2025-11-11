@@ -9,6 +9,6 @@ export class CompareRoutes {
   }
 
   async execute(): Promise<Route[]> {
-    return this.routesPort.getRoutesForComparison();
+    return this.routesPort.getComparisonRoutes();
   }
 }
