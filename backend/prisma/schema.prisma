@@ -12,3 +12,23 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Route {
+  id             String   @id @default(cuid())
+  vesselType     String
+  fuelType       String
+  year           Int
+  ghgIntensity   Float
+  fuelConsumption Float
+  distance       Float
+  totalEmissions Float
+  isBaseline     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model Bank {
+  id          String   @id @default(cuid())
+  routeId     String
+  credits     Float
+  createdAt   DateTime @default(now())
+}
